@@ -7,5 +7,6 @@ This program is going to look very similar to the one developed by [Stephen Bren
   * convert binary file into [intel hex format](https://en.wikipedia.org/wiki/Intel_HEX)
 
 # Environment
-* OS : Ubuntu 20:04
-* GCC: 9.3.0
+* OS       : Ubuntu 20:04
+* Language : C
+* Compiler : GCC 9.3.0
