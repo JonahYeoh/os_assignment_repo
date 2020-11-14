@@ -1,0 +1,7 @@
+to compile:
+gcc binary_to_intel_hex_format.c -o <excutable>
+to execute:
+./<executable> <binary_filename> <hex_filename>.hex
+
+<hex_filename>.hex will be created after program execution
+
