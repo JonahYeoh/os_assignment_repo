@@ -1,0 +1,1 @@
+cmd_/home/jonah/Documents/kernel_programming/hello_world/main.mod := { echo  /home/jonah/Documents/kernel_programming/hello_world/main.o; echo; } > /home/jonah/Documents/kernel_programming/hello_world/main.mod

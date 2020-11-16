@@ -1,0 +1,1 @@
+cmd_/home/jonah/Documents/kernel_programming/hello_world/main.ko := ld -r -m elf_x86_64  -z max-page-size=0x200000  --build-id  -T ./scripts/module-common.lds -o /home/jonah/Documents/kernel_programming/hello_world/main.ko /home/jonah/Documents/kernel_programming/hello_world/main.o /home/jonah/Documents/kernel_programming/hello_world/main.mod.o;  true
