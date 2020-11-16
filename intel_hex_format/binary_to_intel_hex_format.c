@@ -57,8 +57,8 @@ int readFile(const char *src, const char *dst)
 			csum = checksum(0x20, address, 0X00, record, 32);
 			csum = (csum<<8);
 			csum = (csum>>8); 
-			printf("%d\t:20%04X", seq++, address);
-			fprintf(write_ptr, ":20%04X", address);
+			printf("%d\t:20%04X00", seq++, address);
+			fprintf(write_ptr, ":20%04X00", address);
 			for ( k = 0; k < 32; k++ )
 			{
 				printf("%02X", record[k]);
@@ -87,8 +87,8 @@ int readFile(const char *src, const char *dst)
 	csum = checksum(i, address, 0X00, record, i);
 	csum = (csum<<8);
 	csum = (csum>>8); 
-	printf("%d\t:%02X%04X", seq++, i, address);
-	fprintf(write_ptr, ":%d%04X", i, address);
+	printf("%02d\t:%02X%04X00", seq++, i, address);
+	fprintf(write_ptr, ":%02d%04X00", i, address);
 	for ( k = 0; k < i; k++ )
 	{
 		printf("%02X", record[k]);
