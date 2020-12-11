@@ -1,42 +1,99 @@
 LAB 4
 Table of Contents 
-1. Lab Description 
-2. Lab Objective 
-3. Exercises 
-4. Deliverable 
+1. Lab Description 实验描述
+2. Lab Objective 实验目的
+3. Exercises 练习
+4. Deliverable 成果输出
 
-Description 
+Description 实验描述
 
-In this lab, you will learn how to synchronize the actions of multiple threads. Synchronization is a means to ensure correct flow of execution between two or more threads working with shared data. We cover two types of synchronization: locking and waiting. Locking is used to prevent race condition between two or more threads to access shared data. It is used to ensure that only one thread that can access shared data at a time (to prevent race conditions). Waiting is used to enforce the correct sequence of execution. In this lab, we will use mutexes in order to handle these two type of synchronization.
+In this lab, you will learn how to synchronize the actions of multiple threads. 在本次实验，您会学习多个线程的同步化。
+Synchronization is a means to ensure correct flow of execution between two or more threads working with shared data. 同步化是一种确保两个或多个有使用共用资料的线程执行合理性的操作。
+We cover two types of synchronization: locking and waiting. 我们这次会涵盖两种同步化的方法，栓锁和等待。
+Locking is used to prevent race condition between two or more threads to access shared data. 栓锁法是为了避免两个或多个线程同时存取共用资料。
+It is used to ensure that only one thread that can access shared data at a time (to prevent race conditions). 栓锁法确保每一次只有一条线程在存取共用资料。
+Waiting is used to enforce the correct sequence of execution. 等待法是用来确保线程间的在执行上的相依性。
+In this lab, we will use mutexes in order to handle these two type of synchronization. 在本次实验，我们会使用mutex实作线程同步化。
 
-Objectives 
 
-Learn how to synchronize threads in a POSIX compliant operating system using C. (i.e. Identical source code should work in Linux, Solaris, Windows with cygwin, Mac OSX, etc.) A mutex, which stands for mutual exclusion, is the most basic form of synchronization. A mutex is used to protect a critical region, to make certain that only one thread at a time executes the code within the region. Since only one thread at a time can lock a given mutex, this guarantees that only one thread at a time can be executing the instructions within the critical region. Although we talk of a critical region being protected by a mutex, what is really protected is the data being manipulated within the critical region. That is, a mutex is normally used to protect data that is being shared between multiple threads. Mutexes are for locking and cannot be used for waiting. Condition variables are used in combination with mutex in situations when waiting is needed.
-What you have to do Steps to perform 
+Objectives 实验目的
+
+Learn how to synchronize threads in a POSIX compliant operating system using C. 使用C语言在符合POSIX的作业系统实作线程同步化。
+(i.e. Identical source code should work in Linux, Solaris, Windows with cygwin, Mac OSX, etc.) 
+A mutex, which stands for mutual exclusion, is the most basic form of synchronization. Mutex，说的是互斥，是同步化的最基础。
+A mutex is used to protect a critical region, to make certain that only one thread at a time executes the code within the region. 使用mutex来保护critical region，以确保每一次只有一条线程执行critical region。
+Since only one thread at a time can lock a given mutex, this guarantees that only one thread at a time can be executing the instructions within the critical region. 同上
+Although we talk of a critical region being protected by a mutex, what is really protected is the data being manipulated within the critical region. 虽然说mutex确保critical region每次只被一条线程执行，但是mutex真正在保护的是在critical region中可能被更改的共用资料。
+That is, a mutex is normally used to protect data that is being shared between multiple threads. 同上
+Mutexes are for locking and cannot be used for waiting. mutex的用途是栓锁，不是等待。
+Condition variables are used in combination with mutex in situations when waiting is needed. 若需要等待的机制，我们会搭配条件变数实作。
+What you have to do Steps to perform 您需要做的事如下
 
 Part 1
 
-1.	Download the code lab2.c. In the code, each of the placeholders should be replaced with one or more C instructions in order to complete the program. The required libraries are included but you may need to include more libraries if you follow a different approach. In this program, the goal is to have five threads each of which generates 2000 random numbers and adds them to the shared variable sum. The generator threads have been implemented in generator_function. Read this function and make sure you understand what it is doing. 
-2.	It is probably convenient to replace the random number added with the constant 1 and to reduce the number of loops to 20 instead of 2000. Thus each thread should increment 20 times; with 5 threads the total should be 5*20 = 100. 
-3.	Replace placeholder A with the code for creating five generator threads and variables for keeping them as you learned. 
-4.	Replace placeholder B with the code for making sure the all five threads have been finished before the main function finishes. 
-5.	Now your program should work and at the end of its execution the sum of generated value is stored in the sum variable. In order to verify if the program is working correctly, every generator function also sums its generated values and prints it when it finished generating numbers. Run the program and check if the program has performed correctly also include your program output in the report. Most probably, the sum of separate generator classes is not equal to total sum. This is because the access to shared variable has not been synchronized. The region of code working with sum variable is a critical section and only one thread should be able to execute it at a time. Mutex can be used to ensure exclusive access to critical section of the code working with sum. 
-6.	A mutex is a variable of type pthread_mutex_t. A static mutex can be initialized by a constant PTHREAD_MUTEX_INITIALIZER. A static mutex works most of the time. Replace placeholder C with static declaration of a mutex and initialize it. 
-7.	Lock function (pthread_mutex_lock function) should be called on the mutex just before the region of the code that is considered critical section. If a thread tries to lock a mutex that is already locked by some other thread, pthread_mutex_lock blocks until the mutex is unlocked. Place the appropriate call to mutex lock in the correct location on the code. 
-8.	After the critical section is finished the thread should unlock the mutex (by calling pthread_mutex_unlock function) in order to allow other threads to enter the critical section. Place appropriate call to mutex unlock in the correct location of the code. Make sure all generators can run interleavably but in a safe manner. Now your program should run correctly, run the program again and verify its correctness. 
-9.	The print_function prints the value of the sum variable. This function is called after all generators have finished. (This ends part 1.)
+1.	Download the code lab2.c. In the code, each of the placeholders should be replaced with one or more C instructions in order to complete the program. 下载程式档lab2.c。在指定区块中加入您的C指令完成程式。
+The required libraries are included but you may need to include more libraries if you follow a different approach. 程式中已经引入所需的函式库，除非您使用不一样的方法实作。
+In this program, the goal is to have five threads each of which generates 2000 random numbers and adds them to the shared variable sum. 这个程式的目的是使用5条线程，每条产生2000个乱数并加到共用变数sum。
+The generator threads have been implemented in generator_function. Read this function and make sure you understand what it is doing. 程式中包含生产者线程的实作。请阅读并确保您了解它的操作。
 
-Part 2 
+2.	It is probably convenient to replace the random number added with the constant 1 and to reduce the number of loops to 20 instead of 2000. 学生也可考虑用常数1取代乱数，及将回合数从2000降到20。
+Thus each thread should increment 20 times; with 5 threads the total should be 5*20 = 100. 所以每条线程会加20次；5条线程应该有5*20 = 100。
 
-10.	We will try to create a new thread instead of calling it as a function from the main thread. Remove print_function call from the main function and replace placeholder D with the code for creating a thread that runs the print thread and a variable for accessing it. 
-11.	Replace placeholder E with the code for making sure the print thread has finished before the main function finishes. 
-12.	Now the printing function will run as a thread too, but we need to make sure that printing the value of sum is executed after all random numbers have been generated. In other words, the print function should wait until all generators have finished generating numbers. Therefore, a waiting mechanism is needed to ensure this synchronization. Condition variables can be used for this purpose. pthread_cond_wait and pthread_cond_signal are two main functions of condition variables. The pthread_cond_wait puts a thread into sleep until a pthread_cond_signal call is made on the same variable. Replace placeholder F with declaration and initialization of a condition variable, which is a variable of type pthread_cond_t. A condition variable can be initialized by assigning PTHREAD_COND_INITIALIZER to it. 
-13.	The program uses finished_producers to store the number of generator threads that have finished their work. Replace placeholder G with the correct instructions to put the thread into sleep if all generators have not finished working yet. Notice that it is possible that the wrong signal may be fired on a condition variable and hence it’s highly recommended to use while instead of if for checking a condition. 
-14.	Replace placeholder H with needed code so the producer thread fires a signal on the condition variable if all generators have finished working. *Run you program in order to make sure it works correctly. Include the output of the program in the report.
+3.	Replace placeholder A with the code for creating five generator threads and variables for keeping them as you learned. 在区块A加入创5条生产者线程的指令和所需的变数。
 
-And Finally: 
+4.	Replace placeholder B with the code for making sure the all five threads have been finished before the main function finishes. 在区块B加入确保这5条线程在主程式结束前结束的指令。
 
-After Demonstration, submit your lab To submit your lab do: 
-1. Zip your source code files (*.c, *.h) into a file called lab4.zip 
-2. Submit the zip file with the command: submit lab2.zip to Moodle.
+5.	Now your program should work and at the end of its execution the sum of generated value is stored in the sum variable. 您的程式应该能够执行，没回合后sum加上产生的乱数会放回（store)到sum这个共用变数。
+In order to verify if the program is working correctly, every generator function also sums its generated values and prints it when it finished generating numbers. 为了验证程式的执行结果无误，每条生产者线程也会把自己在过程中产生过的乱数加总并在所有回合结束时输出sum_this_generator的结果。
+Run the program and check if the program has performed correctly also include your program output in the report. 执行程式，了解程式是否合理执行。请把执行结果包含在报告中。
+Most probably, the sum of separate generator classes is not equal to total sum. 很大可能每条线程做产生的乱数加总不等于sum的值。
+This is because the access to shared variable has not been synchronized. 原因是共用变数的存取并未同步化。
+The region of code working with sum variable is a critical section and only one thread should be able to execute it at a time. 凡是有存取sum的区块都是critical region，需确保每一次只有一条线程执行这个区块中的指令。
+Mutex can be used to ensure exclusive access to critical section of the code working with sum. mutex可以确保有存取sum的critical section每次只有一条线程执行。
 
+6.	A mutex is a variable of type pthread_mutex_t. mutex是pthread_mutex_t型态的变数。
+A static mutex can be initialized by a constant PTHREAD_MUTEX_INITIALIZER. 静态mutex可用PTHREAD_MUTEX_INITIALIZER初始化。
+A static mutex works most of the time. Replace placeholder C with static declaration of a mutex and initialize it. 静态mutex一般上可用。请在区块C加入mutex的静态宣告与初始化。
+
+7.	Lock function (pthread_mutex_lock function) should be called on the mutex just before the region of the code that is considered critical section. 上锁函式(pthread_mutex_lock)应在critical section前呼叫。
+If a thread tries to lock a mutex that is already locked by some other thread, pthread_mutex_lock blocks until the mutex is unlocked. 若某个线程尝试对一个处于上锁状态的mutex上锁，该线程将会被block,直到mutex被解锁。
+Place the appropriate call to mutex lock in the correct location on the code. 在适当的程式区加入pthread_mutex_lock指令呼叫。
+
+8.	After the critical section is finished the thread should unlock the mutex (by calling pthread_mutex_unlock function) in order to allow other threads to enter the critical section. 
+critical section结束后应对mutex解锁(透过呼叫pthread_mutex_unlock)以确保其他线程可进入critical section。
+Place appropriate call to mutex unlock in the correct location of the code. 在适当的程式区加入pthread_mutex_unlock指令呼叫。
+Make sure all generators can run interleavably but in a safe manner. 确保每个产生者可合理地交互执行。
+Now your program should run correctly, run the program again and verify its correctness. 现在您的程式应该能够正常执行，再执行并验证它的准确性。
+
+9.	The print_function prints the value of the sum variable. print_function输出变数sum的值。
+This function is called after all generators have finished. (This ends part 1.) 所有生产者都完成执行后才执行print_function。
+
+Part 2
+
+10.	We will try to create a new thread instead of calling it as a function from the main thread. 与其直接从主函式呼叫print_function，我们创多一条执行print_function的线程。
+Remove print_function call from the main function and replace placeholder D with the code for creating a thread that runs the print thread and a variable for accessing it. 移去呼叫print_function的指令然后在区块D加入创输出者线程的指令及变数。
+
+11.	Replace placeholder E with the code for making sure the print thread has finished before the main function finishes. 在区块E中加入确保输出者线程在主线程结束前结束的指令。
+
+12.	Now the printing function will run as a thread too, but we need to make sure that printing the value of sum is executed after all random numbers have been generated. 
+现在输出者也是一条线程，但是我们必须确保它在所有乱数被生产后才执行输出sum的值。
+In other words, the print function should wait until all generators have finished generating numbers. 换句话说，print_function必须等待所有生产者完成后才能执行自己的指令。
+Therefore, a waiting mechanism is needed to ensure this synchronization. 因此，需要实作等待的机制以确保同步化。
+Condition variables can be used for this purpose. 条件变数可在这个情景发挥用途。
+pthread_cond_wait and pthread_cond_signal are two main functions of condition variables. pthread_cond_wait和pthread_cond_signal是条件变数的两个主要函式。
+The pthread_cond_wait puts a thread into sleep until a pthread_cond_signal call is made on the same variable. pthread_cond_wait使呼叫者进入睡眠状态，直到其他线程针对同一个条件变数呼叫pthread_cond_signal。
+Replace placeholder F with declaration and initialization of a condition variable, which is a variable of type pthread_cond_t. 在区块F加入pthread_cond_t型态的条件变数的宣告与初始化，
+A condition variable can be initialized by assigning PTHREAD_COND_INITIALIZER to it. 条件变数可用PTHREAD_COND_INITIALIZER初始化。
+
+13.	The program uses finished_producers to store the number of generator threads that have finished their work. 程式利用finished_producers变数表示已完成执行的生产者线程。
+Replace placeholder G with the correct instructions to put the thread into sleep if all generators have not finished working yet. 在区块G中加入让线程进入睡眠状态的指令(若所有生产者线程尚未完成执行)。
+Notice that it is possible that the wrong signal may be fired on a condition variable and hence it’s highly recommended to use while instead of if for checking a condition. 
+注意可能有错误的讯号针对条件变数发射，所以建议在检查条件时使用while而不是if。
+14.	Replace placeholder H with needed code so the producer thread fires a signal on the condition variable if all generators have finished working. 在区块H加入当所有生产者线程已完成后针对条件变数发射讯号的指令。
+*Run you program in order to make sure it works correctly. Include the output of the program in the report. 执行程式确认它能合理执行。在报告中显示执行结果。
+
+And Finally: 最后的最后
+
+After Demonstration, submit your lab To submit your lab do: 操作示范后，上传实验
+1. Zip your source code files (*.c, *.h) into a file called lab4.zip 压缩程式档案(*.c, *.h)，并以lab4.zip命名。
+2. Submit the zip file with the command: submit lab2.zip to Moodle.将压缩档上传到moodle。
