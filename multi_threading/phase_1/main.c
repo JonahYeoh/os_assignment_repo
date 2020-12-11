@@ -23,7 +23,7 @@ long finished_producers; /* number of the producer that finished producing */
 pthread_t tid[PRODUCER_NO];
 pthread_t print_thread;
 //C: Mutex declaration and initialization
-pthread_mutex_t lock; 
+pthread_mutex_t lock;
 //F: Condition variable declaration and initialization
 pthread_cond_t all_done = PTHREAD_COND_INITIALIZER;
 int main(void) {
@@ -92,7 +92,7 @@ void *print_function(void *arg) {
     //G: Wait until all generator has finished
     // critical section start
     pthread_mutex_lock(&lock);
-    if ( finished_producers != PRODUCER_NO )
+    while ( finished_producers != PRODUCER_NO )
         pthread_cond_wait(&all_done, &lock);
     printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
     printf("The value of counter at the end is: %ld \n", sum);
