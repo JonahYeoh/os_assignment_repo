@@ -18,14 +18,17 @@
 
 void *generator_function(void *arg);
 void *print_function(void *arg);
+
 long sum; /* Sum of generated values*/
 long finished_producers; /* number of the producer that finished producing */
+
 pthread_t tid[PRODUCER_NO];
 pthread_t print_thread;
 //C: Mutex declaration and initialization
 pthread_mutex_t lock;
 //F: Condition variable declaration and initialization
 pthread_cond_t all_done = PTHREAD_COND_INITIALIZER;
+
 int main(void) {
     /* initialize random seed: */
     srand(time(NULL));
@@ -37,19 +40,34 @@ int main(void) {
     }
 
     //A: Creates five generator thread
-    int i;
-    for ( i=0; i<PRODUCER_NO; i++ )
-        pthread_create(&(tid[i]), NULL, &generator_function, NULL);
-    
+    int i, create_status, join_status;
+    for ( i=0; i<PRODUCER_NO; i++ ){
+    	create_status = pthread_create(&(tid[i]), NULL, &generator_function, NULL);
+        if ( create_status != 0){
+        	printf("Exception On Thread Creation : Code %d\n", create_status);
+        	return 1;
+        }
+    }
     //D: Creates print thread
-    pthread_create(&print_thread, NULL, &print_function, NULL);
+    create_status = pthread_create(&print_thread, NULL, &print_function, NULL);
+    if ( create_status != 0){
+       	printf("Exception On Thread Creation : Code %d\n", create_status);
+       	return 1;
+    }
     //B: Makes sure that all generator threads has finished before proceeding
-    for ( i=0; i<PRODUCER_NO; i++ )
-        pthread_join(tid[i], NULL);
-
+    for ( i=0; i<PRODUCER_NO; i++ ){
+    	join_status = pthread_join(tid[i], NULL);
+        if ( join_status != 0){
+    		fprintf(stderr, "Exception On Thread Join : Code %d\n", join_status );    
+    		return 2;
+        }
+    }
     //E: Makes sure that print thread has finished before proceeding
-    pthread_join(print_thread, NULL);
-
+    join_status = pthread_join(print_thread, NULL);
+    if ( join_status != 0){
+    	fprintf(stderr, "Exception On Thread Join : Code %d\n", join_status );
+    	return 2;
+    }
     pthread_mutex_destroy(&lock);
 
     return (0);
@@ -72,7 +90,7 @@ void *generator_function(void *arg) {
         pthread_mutex_unlock(&lock);
         counter++;
         sum_this_generator += rnd_number;
-        usleep(1000);
+        usleep(500);
     }
     printf("--+---+----+----------+---------+---+--+---+------+----\n");
     printf("The sum of produced items for this number generator at the end is: %ld \n", sum_this_generator);
